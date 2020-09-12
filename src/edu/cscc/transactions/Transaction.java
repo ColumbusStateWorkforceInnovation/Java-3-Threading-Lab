@@ -2,6 +2,9 @@ package edu.cscc.transactions;
 
 import java.util.Objects;
 
+/**
+ * Represents a transaction in the the rental_transactions.csv.
+ */
 public class Transaction {
 
     private String employeeId;
