@@ -62,7 +62,7 @@ public class TransactionsReader implements Iterable<Transaction> {
          * @return true if another record can be read, false otherwise.
          */
         @Override
-        public boolean hasNext() {
+        public synchronized boolean hasNext() {
             try {
                 return csvReader.peek() != null;
             } catch (IOException e) {
@@ -73,11 +73,26 @@ public class TransactionsReader implements Iterable<Transaction> {
         }
 
         /**
+         * If there is another record to be read return
+         * that record without advancing to the next record.
+         * @return The next record if there is one, null otherwise.
+         */
+        public synchronized Transaction peek() {
+            try {
+                String[] peek = csvReader.peek();
+                if (peek != null) return ConvertTransaction.convert(peek);
+                return null;
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        /**
          * Read the next transaction.
          * @return A {@link Transaction}, or null if one is not available.
          */
         @Override
-        public Transaction next() {
+        public synchronized Transaction next() {
             try {
                 return ConvertTransaction.convert(csvReader.readNext());
             } catch (IOException e) {
